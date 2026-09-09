@@ -1,0 +1,165 @@
+{
+"Apple___Apple_scab": {
+"description": "A fungal disease causing olive-green to brown lesions on leaves and fruits.",
+"symptoms": [
+"Dark spots on leaves",
+"Premature leaf drop",
+"Scabby fruit lesions"
+],
+"organic_treatment": [
+"Spray neem oil every 7-10 days",
+"Apply compost tea as a foliar spray",
+"Remove and destroy infected leaves",
+"Use sulfur-based organic fungicides"
+],
+"prevention": [
+"Improve air circulation",
+"Prune dense branches",
+"Avoid overhead watering"
+]
+},
+
+"Apple___Black_rot": {
+"description": "Fungal disease affecting leaves, fruits, and branches.",
+"symptoms": [
+"Purple leaf spots",
+"Fruit rot",
+"Cankers on branches"
+],
+"organic_treatment": [
+"Prune infected branches",
+"Apply copper-based organic fungicide",
+"Use neem oil sprays"
+],
+"prevention": [
+"Remove fallen fruits",
+"Maintain orchard sanitation"
+]
+},
+
+"Apple___Cedar_apple_rust": {
+"description": "Fungal disease requiring juniper and apple hosts.",
+"symptoms": [
+"Yellow-orange leaf spots",
+"Premature leaf drop"
+],
+"organic_treatment": [
+"Neem oil spray",
+"Sulfur fungicide",
+"Remove nearby juniper hosts if possible"
+],
+"prevention": [
+"Plant resistant varieties",
+"Monitor early-season infections"
+]
+},
+
+"Apple___healthy": {
+"description": "Healthy plant.",
+"symptoms": [],
+"organic_treatment": [
+"Continue balanced organic fertilization",
+"Maintain regular watering"
+],
+"prevention": [
+"Regular monitoring"
+]
+},
+
+"Potato___Early_blight": {
+"description": "Fungal disease caused by Alternaria solani.",
+"symptoms": [
+"Brown target-like spots",
+"Yellowing leaves"
+],
+"organic_treatment": [
+"Neem oil spray",
+"Compost tea spray",
+"Remove infected leaves",
+"Apply copper fungicide"
+],
+"prevention": [
+"Crop rotation",
+"Avoid overhead irrigation"
+]
+},
+
+"Potato___Late_blight": {
+"description": "Highly destructive disease caused by Phytophthora infestans.",
+"symptoms": [
+"Water-soaked lesions",
+"Dark brown leaf spots",
+"White fungal growth"
+],
+"organic_treatment": [
+"Copper fungicide",
+"Destroy infected plants immediately",
+"Improve drainage"
+],
+"prevention": [
+"Use certified seed potatoes",
+"Ensure good airflow"
+]
+},
+
+"Tomato___Early_blight": {
+"description": "Common fungal disease affecting tomato foliage.",
+"symptoms": [
+"Concentric ring spots",
+"Lower leaf yellowing"
+],
+"organic_treatment": [
+"Neem oil",
+"Compost tea",
+"Copper fungicide"
+],
+"prevention": [
+"Mulching",
+"Crop rotation"
+]
+},
+
+"Tomato___Late_blight": {
+"description": "Serious disease causing rapid plant collapse.",
+"symptoms": [
+"Dark lesions",
+"White mold under leaves"
+],
+"organic_treatment": [
+"Copper fungicide",
+"Remove infected plants"
+],
+"prevention": [
+"Avoid wet foliage",
+"Ensure spacing between plants"
+]
+},
+
+"Tomato___Leaf_Mold": {
+"description": "Fungal disease common in humid environments.",
+"symptoms": [
+"Yellow leaf patches",
+"Olive-green mold underneath"
+],
+"organic_treatment": [
+"Neem oil",
+"Improve ventilation",
+"Reduce humidity"
+],
+"prevention": [
+"Proper plant spacing"
+]
+},
+
+"Tomato___healthy": {
+"description": "Healthy tomato plant.",
+"symptoms": [],
+"organic_treatment": [
+"Maintain organic compost",
+"Regular watering"
+],
+"prevention": [
+"Monitor pests and diseases"
+]
+}
+}

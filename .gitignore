@@ -1,0 +1,69 @@
+# ==========================
+# Python
+# ==========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual Environments
+krishinetra_env/
+venv/
+env/
+.venv/
+node_modules/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# ==========================
+# Environment Variables
+# ==========================
+.env
+
+# ==========================
+# Streamlit
+# ==========================
+.streamlit/secrets.toml
+
+# ==========================
+# Logs
+# ==========================
+logs/
+*.log
+
+# ==========================
+# VS Code
+# ==========================
+.vscode/
+
+# ==========================
+# PyCharm
+# ==========================
+.idea/
+
+# ==========================
+# OS Files
+# ==========================
+.DS_Store
+Thumbs.db
+
+# ==========================
+# Python Build
+# ==========================
+build/
+dist/
+*.egg-info/
+
+# ==========================
+# TensorFlow Checkpoints
+# ==========================
+checkpoints/
+*.ckpt
+*.pb
+
+# ==========================
+# Temporary Files
+# ==========================
+*.tmp
+*.temp
