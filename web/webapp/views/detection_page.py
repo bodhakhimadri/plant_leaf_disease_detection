@@ -28,8 +28,8 @@ def show_detection_page():
 
     Upload a plant leaf image and receive:
 
-    - Disease Prediction
-    - Confidence Score
+    - Hybrid Disease Prediction
+    - Field Trust Score
     - Symptoms Analysis
     - Organic Treatments
     - AI Generated Report
@@ -142,6 +142,27 @@ def show_detection_page():
                 100
             )
         )
+
+    # Field Trust Score is LeafCare's differentiator: it makes model certainty
+    # useful in real field photos by including focus and exposure quality.
+    st.divider()
+    st.header("Field Trust Score")
+    st.caption("A practical reliability signal based on diagnosis confidence and photo quality. Model agreement is included when the optional ensemble is trained.")
+    trust_column, quality_column, agreement_column = st.columns(3)
+    trust_column.metric("Trust Score", f"{result['field_trust_score']}/100")
+    quality_column.metric("Photo Quality", f"{result['photo_quality']['score']}/100")
+    agreement = result["model_agreement"]
+    agreement_column.metric("Model Agreement", f"{agreement:.1f}%" if agreement is not None else "Not enabled")
+
+    if result["field_trust_score"] < 65:
+        st.warning("Retake the photo before acting on this diagnosis.")
+    with st.expander("How to improve the Field Trust Score"):
+        for tip in result["photo_quality"]["tips"]:
+            st.write(f"• {tip}")
+
+    st.subheader("Top 3 possible diagnoses")
+    for rank, candidate in enumerate(result["top_predictions"], start=1):
+        st.write(f"{rank}. {candidate['disease'].replace('_', ' ')} — {candidate['confidence']:.2f}%")
 
 
     # ---------- Disease Information ---------- 

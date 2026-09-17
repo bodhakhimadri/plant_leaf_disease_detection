@@ -5,6 +5,11 @@ import numpy as np
 import tensorflow as tf
 
 from backend.src.logger import log_event
+from backend.src.hybrid import (
+    analyse_photo_quality,
+    blend_predictions,
+    field_trust_score,
+)
 
 from ai.leaf_validation.leaf_predict import is_leaf
 
@@ -59,7 +64,8 @@ def predict_disease(image_path):
 
     img_array = np.expand_dims(img_array, axis=0)
 
-    prediction = model.predict(img_array, verbose=0)[0]
+    primary_prediction = model.predict(img_array, verbose=0)[0]
+    prediction, agreement = blend_predictions(img_array, primary_prediction)
 
     predicted_index = int(np.argmax(prediction))
     confidence = float(prediction[predicted_index] * 100)
@@ -87,8 +93,23 @@ def predict_disease(image_path):
         }
     )
 
+    top_indices = np.argsort(prediction)[-3:][::-1]
+    photo_quality = analyse_photo_quality(image_path)
+
     return {
-    "success": True,
-    "disease": disease,
-    "confidence": confidence
+        "success": True,
+        "disease": disease,
+        "confidence": confidence,
+        "top_predictions": [
+            {
+                "disease": CLASS_NAMES[int(index)],
+                "confidence": round(float(prediction[index] * 100), 2),
+            }
+            for index in top_indices
+        ],
+        "photo_quality": photo_quality,
+        "model_agreement": agreement,
+        "field_trust_score": field_trust_score(
+            confidence, photo_quality["score"], agreement
+        ),
     }

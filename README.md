@@ -26,6 +26,26 @@ It also provides secure user accounts, prediction history, dashboard analytics, 
 | AI reports | Groq |
 | Visualizations | Plotly |
 
+## Hybrid model and Field Trust Score
+
+LeafCare keeps MobileNetV2 as its primary classifier and can blend it with an
+optional EfficientNetB0 model. The app falls back safely to MobileNetV2 when
+the optional model has not been trained.
+
+The unique **Field Trust Score** combines diagnosis confidence with real-world
+photo focus and exposure. When the ensemble is enabled, it also includes the
+agreement between both models. The result view displays the top three
+diagnoses and actionable tips for a better field photo.
+
+To train the optional EfficientNet model, run this from the repository root:
+
+```bash
+python ai/scripts/train_ensemble.py
+```
+
+Its dataset class order must match `ai/models/class_names.json`; the script
+checks this before training to prevent unsafe prediction blending.
+
 ## Project structure
 
 ```text
