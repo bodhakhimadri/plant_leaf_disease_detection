@@ -26,6 +26,7 @@ It also provides secure user accounts, prediction history, dashboard analytics, 
 | AI reports | Groq |
 | Visualizations | Plotly |
 
+<<<<<<< Updated upstream
 ## Hybrid model and Field Trust Score
 
 LeafCare keeps MobileNetV2 as its primary classifier and can blend it with an
@@ -38,13 +39,35 @@ agreement between both models. The result view displays the top three
 diagnoses and actionable tips for a better field photo.
 
 To train the optional EfficientNet model, run this from the repository root:
+=======
+## Hybrid diagnosis and Field Trust Score
+
+LeafCare uses its existing leaf validator before classifying a valid leaf with
+MobileNetV2. It can also blend MobileNetV2 with an EfficientNetB0 model when
+`ai/models/efficientnet_disease_model.keras` is present. The app keeps working
+with MobileNetV2 alone until that optional model has been trained.
+
+Every result includes a **Field Trust Score**: a practical reliability signal
+made from model confidence, image focus/brightness/leaf coverage, and (when the
+ensemble model is installed) agreement between the two classifiers. It shows
+top-three diagnoses and specific advice for retaking a weak field photo.
+
+Train the optional ensemble member with:
+>>>>>>> Stashed changes
 
 ```bash
 python ai/scripts/train_ensemble.py
 ```
 
+<<<<<<< Updated upstream
 Its dataset class order must match `ai/models/class_names.json`; the script
 checks this before training to prevent unsafe prediction blending.
+=======
+The train and validation directories must contain the same class names and
+alphabetical ordering as `ai/models/class_names.json`; the training script
+checks this before creating the model so incorrect output indices are never
+silently blended.
+>>>>>>> Stashed changes
 
 ## Project structure
 

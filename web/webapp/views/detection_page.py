@@ -29,7 +29,11 @@ def show_detection_page():
     Upload a plant leaf image and receive:
 
     - Hybrid Disease Prediction
+<<<<<<< Updated upstream
     - Field Trust Score
+=======
+    - Field Trust Score (photo quality + model agreement)
+>>>>>>> Stashed changes
     - Symptoms Analysis
     - Organic Treatments
     - AI Generated Report
@@ -103,6 +107,7 @@ def show_detection_page():
 
         disease_name = result["disease"]
         confidence = result["confidence"]
+        field_trust_score = result["field_trust_score"]
 
     with col2:
 
@@ -143,6 +148,7 @@ def show_detection_page():
             )
         )
 
+<<<<<<< Updated upstream
     # Field Trust Score is LeafCare's differentiator: it makes model certainty
     # useful in real field photos by including focus and exposure quality.
     st.divider()
@@ -163,6 +169,38 @@ def show_detection_page():
     st.subheader("Top 3 possible diagnoses")
     for rank, candidate in enumerate(result["top_predictions"], start=1):
         st.write(f"{rank}. {candidate['disease'].replace('_', ' ')} — {candidate['confidence']:.2f}%")
+=======
+    # ---------- Hybrid evidence and Field Trust Score ----------
+
+    st.divider()
+    st.header("Field Trust Score")
+    st.caption(
+        "A LeafCare-only reliability signal that combines image quality, "
+        "diagnostic confidence, and agreement between the hybrid models."
+    )
+    trust_col, quality_col, agreement_col = st.columns(3)
+    trust_col.metric("Field Trust Score", f"{field_trust_score}/100")
+    quality_col.metric("Photo Quality", f"{result['photo_quality']['score']}/100")
+    agreement = result["model_agreement"]
+    agreement_col.metric("Model Agreement", f"{agreement:.1f}%" if agreement is not None else "Pending")
+
+    if field_trust_score >= 80:
+        st.success("This is a dependable field diagnosis. Follow the treatment guidance and monitor nearby leaves.")
+    elif field_trust_score >= 60:
+        st.warning("Useful preliminary diagnosis. Check the alternatives below or upload a sharper close-up before treatment.")
+    else:
+        st.error("Do not rely on this diagnosis alone. Retake the photo using the guidance below.")
+
+    with st.expander("Improve this diagnosis"):
+        for note in result["photo_quality"]["notes"]:
+            st.write(f"• {note}")
+        if not result["ensemble_available"]:
+            st.info("Currently using the MobileNetV2 model. Train and add the EfficientNet ensemble model to enable model-agreement scoring.")
+
+    st.subheader("Most likely diagnoses")
+    for rank, candidate in enumerate(result["top_predictions"], start=1):
+        st.write(f"{rank}. **{candidate['disease'].replace('_', ' ')}** — {candidate['confidence']:.2f}%")
+>>>>>>> Stashed changes
 
 
     # ---------- Disease Information ---------- 
