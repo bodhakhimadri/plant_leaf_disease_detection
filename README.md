@@ -1,182 +1,68 @@
 # LeafCare
 
-LeafCare is a Streamlit application for plant-leaf disease detection and crop-health insights. Upload a leaf image to receive a model prediction, confidence score, disease information, organic treatment guidance, and an optional AI-generated report.
-
-It also provides secure user accounts, prediction history, dashboard analytics, and regional disease alerts powered by Supabase.
+LeafCare is a Streamlit application for plant-leaf disease detection and crop-health insights. Upload a leaf image to receive a diagnosis, confidence score, treatment guidance, and an optional AI-generated report.
 
 ## Features
 
-- Validates that an uploaded image contains a leaf before running disease classification.
-- Classifies 38 plant disease and healthy-leaf categories across apple, corn, grape, potato, and tomato crops.
-- Shows prediction confidence, symptoms, disease details, and organic treatment recommendations.
-- Generates optional disease reports through Groq.
-- Saves reports to each authenticated user's history.
-- Displays personal and community crop-health analytics.
-- Alerts users when disease-report thresholds are reached in their district.
-- Stores authentication and location-aware profile data with Supabase.
+- Validates that an uploaded image contains a leaf before disease classification.
+- Classifies 38 disease and healthy-leaf categories across apple, corn, grape, potato, and tomato crops.
+- Supports a MobileNetV2 classifier with an optional EfficientNetB0 ensemble.
+- Shows a unique **Field Trust Score** based on confidence, image focus/exposure, and ensemble agreement.
+- Displays the top three likely diagnoses and retake-photo guidance.
+- Provides disease information, organic treatment guidance, prediction history, dashboards, and location-based alerts.
+- Supports Supabase authentication and optional Groq AI reports.
 
-## Technology
+## Hybrid model
 
-| Area | Tools |
-| --- | --- |
-| Web app | Streamlit |
-| Machine learning | TensorFlow, Keras, MobileNetV2 |
-| Image processing | Pillow, OpenCV, NumPy |
-| Data and authentication | Supabase PostgreSQL and Supabase Auth |
-| AI reports | Groq |
-| Visualizations | Plotly |
+The app always works with the primary MobileNetV2 model. When `ai/models/efficientnet_disease_model.keras` exists, LeafCare blends its probabilities with MobileNetV2. If the optional model is missing, incompatible, or fails to load, the app safely uses MobileNetV2 alone.
 
-<<<<<<< Updated upstream
-## Hybrid model and Field Trust Score
-
-LeafCare keeps MobileNetV2 as its primary classifier and can blend it with an
-optional EfficientNetB0 model. The app falls back safely to MobileNetV2 when
-the optional model has not been trained.
-
-The unique **Field Trust Score** combines diagnosis confidence with real-world
-photo focus and exposure. When the ensemble is enabled, it also includes the
-agreement between both models. The result view displays the top three
-diagnoses and actionable tips for a better field photo.
-
-To train the optional EfficientNet model, run this from the repository root:
-=======
-## Hybrid diagnosis and Field Trust Score
-
-LeafCare uses its existing leaf validator before classifying a valid leaf with
-MobileNetV2. It can also blend MobileNetV2 with an EfficientNetB0 model when
-`ai/models/efficientnet_disease_model.keras` is present. The app keeps working
-with MobileNetV2 alone until that optional model has been trained.
-
-Every result includes a **Field Trust Score**: a practical reliability signal
-made from model confidence, image focus/brightness/leaf coverage, and (when the
-ensemble model is installed) agreement between the two classifiers. It shows
-top-three diagnoses and specific advice for retaking a weak field photo.
-
-Train the optional ensemble member with:
->>>>>>> Stashed changes
+Train the optional ensemble model with:
 
 ```bash
 python ai/scripts/train_ensemble.py
 ```
 
-<<<<<<< Updated upstream
-Its dataset class order must match `ai/models/class_names.json`; the script
-checks this before training to prevent unsafe prediction blending.
-=======
-The train and validation directories must contain the same class names and
-alphabetical ordering as `ai/models/class_names.json`; the training script
-checks this before creating the model so incorrect output indices are never
-silently blended.
->>>>>>> Stashed changes
+The training script checks that its dataset class order matches `ai/models/class_names.json` before training.
 
-## Project structure
+## Setup
 
-```text
-.
-|-- ai/                    # Models, datasets, and training scripts
-|-- backend/src/           # Prediction, reports, analytics, and integrations
-|-- supabase/migrations/   # Database schema and policies
-|-- web/webapp/            # Streamlit pages and components
-|-- app.py                 # Application entry point
-|-- requirements.txt       # Python dependencies
-`-- package.json           # Supabase CLI dependency
-```
-
-## Prerequisites
-
-- Python 3.11
-- A Supabase project
-- A Groq API key if you want AI-generated reports
-- Node.js and npm only if you want to apply Supabase migrations with the CLI
-
-## Installation
-
-Clone the repository and enter the project directory.
+Prerequisites: Python 3.11, a Supabase project, and Node.js only when applying
+Supabase migrations through the CLI.
 
 ```bash
-git clone https://github.com/Gobinda03/Plant_Disease_Detection.git
-cd Plant_Disease_Detection
-```
-
-Create and activate a virtual environment.
-
-```bash
-# Windows PowerShell
 python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-
-# macOS or Linux
-python3 -m venv .venv
-source .venv/bin/activate
-```
-
-Install the Python dependencies.
-
-```bash
+source .venv/Scripts/activate  # Git Bash on Windows
 pip install -r requirements.txt
 ```
 
-## Configuration
-
-Create a `.env` file in the repository root. It is ignored by Git, so your credentials will not be committed.
+Create `.env` with the active Supabase project URL and anon/public key. The
+Groq values are optional and are only needed for the AI report button.
 
 ```env
 SUPABASE_URL=https://YOUR_PROJECT_REF.supabase.co
 SUPABASE_KEY=YOUR_SUPABASE_ANON_KEY
-
-# Required only for AI-generated reports
 GROQ_API_KEY=YOUR_GROQ_API_KEY
-
-# Optional
 GROQ_MODEL=llama-3.1-8b-instant
 ```
 
-Find the Supabase URL and anon key in your Supabase project's **Connect** or **API** settings. Use the anon/public key, not a service-role key.
-
-For a Streamlit deployment, configure the same values in `.streamlit/secrets.toml` instead:
-
-```toml
-SUPABASE_URL = "https://YOUR_PROJECT_REF.supabase.co"
-SUPABASE_KEY = "YOUR_SUPABASE_ANON_KEY"
-GROQ_API_KEY = "YOUR_GROQ_API_KEY"
-GROQ_MODEL = "llama-3.1-8b-instant"
-```
-
-## Supabase setup
-
-Apply the included migrations to a Supabase project. With the Supabase CLI:
+Apply the provided Supabase migrations before using authentication and reports.
+Use only the project reference (the subdomain before `.supabase.co`) with the
+link command:
 
 ```bash
-npm install
-npx supabase login
 npx supabase link --project-ref YOUR_PROJECT_REF
 npx supabase db push
 ```
 
-Alternatively, open the Supabase SQL Editor and execute the files in `supabase/migrations/` in filename order. The migrations create the schema, user-profile trigger, report policies, and supporting data required by LeafCare.
-
-## Run the app
+Start the app:
 
 ```bash
 streamlit run app.py
 ```
 
-Open the local URL printed by Streamlit, typically `http://localhost:8501`.
-
 ## Troubleshooting
 
-### Supabase URL is not found
-
-Make sure `.env` exists in the project root and contains both `SUPABASE_URL` and `SUPABASE_KEY`. Restart Streamlit after changing environment variables.
-
-### `public.user_profiles` cannot be found
-
-Apply all SQL files in `supabase/migrations/`, in filename order, then retry the request.
-
-### AI reports are unavailable
-
-Set `GROQ_API_KEY` in `.env` or Streamlit secrets. Leaf detection and disease classification work without it; only report generation is disabled.
-
-## License
-
-No license text has been added to this repository yet. Add a license before distributing or reusing the project.
+If login shows a hostname or `getaddrinfo` error, check that `SUPABASE_URL`
+uses the active URL from Supabase Dashboard and restart Streamlit after editing
+`.env`. A new Supabase project has an empty authentication database, so register
+a new user before attempting to log in.
