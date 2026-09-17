@@ -10,7 +10,7 @@ LeafCare is a Streamlit application for plant-leaf disease detection and crop-he
 - Shows a unique **Field Trust Score** based on confidence, image focus/exposure, and ensemble agreement.
 - Displays the top three likely diagnoses and retake-photo guidance.
 - Provides disease information, organic treatment guidance, prediction history, dashboards, and location-based alerts.
-- Supports Supabase authentication and optional Groq AI reports.
+- Supports Supabase authentication and optional Gemini AI reports.
 
 ## Hybrid model
 
@@ -36,13 +36,12 @@ pip install -r requirements.txt
 ```
 
 Create `.env` with the active Supabase project URL and anon/public key. The
-Groq values are optional and are only needed for the AI report button.
+Gemini values are optional and are only needed for the AI report button.
 
 ```env
 SUPABASE_URL=https://YOUR_PROJECT_REF.supabase.co
 SUPABASE_KEY=YOUR_SUPABASE_ANON_KEY
-GROQ_API_KEY=YOUR_GROQ_API_KEY
-GROQ_MODEL=llama-3.1-8b-instant
+GEMINI_API_KEY=YOUR_GEMINI_API_KEY
 ```
 
 Apply the provided Supabase migrations before using authentication and reports.
