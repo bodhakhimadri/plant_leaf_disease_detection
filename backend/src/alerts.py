@@ -11,40 +11,32 @@ OUTBREAK_THRESHOLD = 30
 
 
 def get_disease_alerts():
-    user = get_user()
+    # Community alerts are optional. A temporary Supabase/DNS failure must not
+    # prevent the authenticated user from opening the main application.
+    try:
+        user = get_user()
 
-    if not user or not user.user:
-        return []
+        if not user or not user.user:
+            return []
 
-    profile = get_profile(
-        user.user.id
-    )
+        profile = get_profile(user.user.id)
 
-    # Older accounts may predate the profile trigger. Do not break the page
-    # header while their profile is being repaired.
-    if not profile or not profile.get("district"):
-        return []
+        # Older accounts may predate the profile trigger. Do not break the page
+        # header while their profile is being repaired.
+        if not profile or not profile.get("district"):
+            return []
 
-    district = profile["district"]
-    seven_days_ago = (
-        datetime.utcnow()
-        - timedelta(days=7)
-    ).isoformat()
-    reports = (
-        supabase
-        .table("disease_reports")
-        .select("*")
-        .gte(
-            "created_at",
-            seven_days_ago
+        district = profile["district"]
+        seven_days_ago = (datetime.utcnow() - timedelta(days=7)).isoformat()
+        reports = (
+            supabase.table("disease_reports").select("*")
+            .gte("created_at", seven_days_ago).eq("district", district)
+            .execute().data
         )
-        .eq(
-            "district",
-            district
-        )
-        .execute()
-        .data
-    )
+
+    except Exception as error:
+        log_event("COMMUNITY ALERTS UNAVAILABLE", {"error": str(error)})
+        return []
 
     counts = {}
 

@@ -56,13 +56,15 @@ def _candidate_models(api_key: str) -> list[str]:
 
 def _build_prompt(disease: str, confidence: float) -> str:
     return f"""
-You are an agricultural extension expert. Produce a concise, practical report
-in Markdown for a farmer. This is decision support, not a laboratory diagnosis.
+You are an agricultural extension expert. Produce a compact, plain-language
+Markdown report for a farmer (approximately 150–200 words). This is decision
+support, not a laboratory diagnosis.
 
 Detected disease: {disease}
 Model confidence: {confidence:.2f}%
 
-Use these headings in exactly this order:
+Use every heading below, in exactly this order. Keep each section to one or two
+short sentences or concise bullets:
 # Summary and Resolution
 # Immediate Actions (next 24 hours)
 # Common Symptoms
@@ -70,9 +72,9 @@ Use these headings in exactly this order:
 # Prevention
 # Recovery and Monitoring
 
-In **Summary and Resolution**, write two short paragraphs: first explain the
-disease and its risk; then state the practical way to resolve or control it.
-In **Immediate Actions**, give 3–5 numbered actions a farmer can take today.
+In **Summary and Resolution**, explain the disease, risk, and practical way to
+control it. In **Immediate Actions**, give three numbered actions a farmer can
+take today. Keep treatment and prevention guidance specific and concise.
 Give actionable, crop-safe guidance. Clearly say that a low-confidence result
 or worsening symptoms should be checked by a local agricultural expert. Do not
 invent pesticide dosage, legal approvals, or a guaranteed recovery time.
@@ -90,7 +92,10 @@ def generate_report(disease: str, confidence: float) -> str:
     try:
         payload = {
             "contents": [{"parts": [{"text": _build_prompt(disease, confidence)}]}],
-            "generationConfig": {"temperature": 0.4, "maxOutputTokens": 900},
+            # Gemini Flash models may use part of this allowance internally
+            # before returning visible text. The prompt—not this ceiling—keeps
+            # the farmer report at 150–200 words.
+            "generationConfig": {"temperature": 0.4, "maxOutputTokens": 1_800},
         }
         models = _candidate_models(api_key)
         if not models:

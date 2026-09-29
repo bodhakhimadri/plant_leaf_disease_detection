@@ -7,8 +7,10 @@ from supabase import create_client
 
 from backend.src.logger import log_event
 
-# Automatically locate and load the .env file from the project root directory
-load_dotenv()
+# Always use the repository's current .env file. This prevents a stale
+# SUPABASE_URL inherited by a long-running Streamlit process from being used.
+ENV_PATH = Path(__file__).resolve().parents[2] / ".env"
+load_dotenv(dotenv_path=ENV_PATH, override=True)
 
 # Attempt to load credentials from Streamlit Secrets first, then fallback to .env
 try:
@@ -17,6 +19,11 @@ try:
 except Exception:
     SUPABASE_URL = os.getenv("SUPABASE_URL")
     SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+
+if not SUPABASE_URL or not SUPABASE_KEY:
+    raise RuntimeError(
+        "Supabase is not configured. Set SUPABASE_URL and SUPABASE_KEY in .env."
+    )
 
 # Initialize the Supabase client
 supabase = create_client(
