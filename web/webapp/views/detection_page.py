@@ -22,7 +22,7 @@ def show_detection_page():
 
     Upload a plant leaf image and receive:
 
-    - Hybrid disease prediction
+    - DenseNet121 disease prediction
     - Field Trust Score
     - Symptoms and organic treatment guidance
     - Optional AI-generated report
@@ -77,12 +77,11 @@ def show_detection_page():
 
     st.divider()
     st.header("Field Trust Score")
-    st.caption("LeafCare combines diagnosis confidence with image quality and, when available, agreement between two models.")
-    trust_column, quality_column, agreement_column = st.columns(3)
+    st.caption("LeafCare combines DenseNet121 diagnosis confidence with photo focus and exposure.")
+    trust_column, quality_column, model_column = st.columns(3)
     trust_column.metric("Trust Score", f"{trust_score}/100")
     quality_column.metric("Photo Quality", f"{result['photo_quality']['score']}/100")
-    agreement = result["model_agreement"]
-    agreement_column.metric("Model Agreement", f"{agreement:.1f}%" if agreement is not None else "Not enabled")
+    model_column.metric("Classifier", "DenseNet121")
     if trust_score < 65:
         st.warning("Retake the photo before acting on this diagnosis.")
     with st.expander("How to improve the Field Trust Score"):

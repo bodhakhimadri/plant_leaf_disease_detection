@@ -6,23 +6,24 @@ LeafCare is a Streamlit application for plant-leaf disease detection and crop-he
 
 - Validates that an uploaded image contains a leaf before disease classification.
 - Classifies 38 disease and healthy-leaf categories across apple, corn, grape, potato, and tomato crops.
-- Supports a MobileNetV2 classifier with an optional EfficientNetB0 ensemble.
-- Shows a unique **Field Trust Score** based on confidence, image focus/exposure, and ensemble agreement.
+- Uses a single DenseNet121 classifier fine-tuned from ImageNet weights.
+- Shows a **Field Trust Score** based on diagnosis confidence and image focus/exposure.
 - Displays the top three likely diagnoses and retake-photo guidance.
 - Provides disease information, organic treatment guidance, prediction history, dashboards, and location-based alerts.
 - Supports Supabase authentication and optional Gemini AI reports.
 
-## Hybrid model
+## DenseNet121 model
 
-The app always works with the primary MobileNetV2 model. When `ai/models/efficientnet_disease_model.keras` exists, LeafCare blends its probabilities with MobileNetV2. If the optional model is missing, incompatible, or fails to load, the app safely uses MobileNetV2 alone.
-
-Train the optional ensemble model with:
+The disease classifier uses DenseNet121 only. Before starting the app for the
+first time on this branch, train and save its ImageNet-initialized classifier:
 
 ```bash
-python ai/scripts/train_ensemble.py
+python ai/scripts/train.py
 ```
 
-The training script checks that its dataset class order matches `ai/models/class_names.json` before training.
+Training writes `ai/models/densenet121_plant_disease.keras`, which the app loads
+for predictions. The script verifies the class order against
+`ai/models/class_names.json` and uses the local `ai/dataset/train` directory.
 
 ## Setup
 
