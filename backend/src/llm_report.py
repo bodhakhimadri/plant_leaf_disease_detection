@@ -20,7 +20,9 @@ NON_TEXT_REPORT_MODEL_TERMS = (
     "computer-use",
 )
 TRANSIENT_STATUS_CODES = {429, 500, 502, 503, 504}
-MAX_GENERATION_ATTEMPTS = 3
+MAX_GENERATION_ATTEMPTS = 2
+CONNECT_TIMEOUT_SECONDS = 10
+READ_TIMEOUT_SECONDS = 90
 
 
 @lru_cache(maxsize=1)
@@ -101,17 +103,25 @@ def generate_report(disease: str, confidence: float) -> str:
 
         unavailable_models = []
         transient_models = []
+        timed_out_models = []
         for model in models:
             for attempt in range(MAX_GENERATION_ATTEMPTS):
-                response = requests.post(
-                    f"{GEMINI_API_BASE}/{model}:generateContent",
-                    headers={
-                        "x-goog-api-key": api_key,
-                        "Content-Type": "application/json",
-                    },
-                    json=payload,
-                    timeout=45,
-                )
+                try:
+                    response = requests.post(
+                        f"{GEMINI_API_BASE}/{model}:generateContent",
+                        headers={
+                            "x-goog-api-key": api_key,
+                            "Content-Type": "application/json",
+                        },
+                        json=payload,
+                        timeout=(CONNECT_TIMEOUT_SECONDS, READ_TIMEOUT_SECONDS),
+                    )
+                except requests.Timeout:
+                    if attempt < MAX_GENERATION_ATTEMPTS - 1:
+                        time.sleep(1.5)
+                        continue
+                    timed_out_models.append(model)
+                    break
                 if response.status_code == 404:
                     unavailable_models.append(model)
                     break
@@ -129,6 +139,14 @@ def generate_report(disease: str, confidence: float) -> str:
                     return report
                 raise ValueError("Gemini returned no report text")
 
+            if timed_out_models:
+                break
+
+        if timed_out_models:
+            raise RuntimeError(
+                "Gemini did not respond in time after an automatic retry. "
+                "Check your internet connection and Gemini API status, then try again."
+            )
         if transient_models:
             raise RuntimeError(
                 "Gemini is temporarily unavailable after automatic retries. "
