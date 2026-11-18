@@ -9,7 +9,7 @@ It also provides secure user accounts, prediction history, dashboard analytics, 
 - Validates that an uploaded image contains a leaf before running disease classification.
 - Classifies 38 plant disease and healthy-leaf categories across apple, corn, grape, potato, and tomato crops.
 - Shows prediction confidence, symptoms, disease details, and organic treatment recommendations.
-- Generates optional disease reports through Groq.
+- Generates optional disease reports through Gemini.
 - Saves reports to each authenticated user's history.
 - Displays personal and community crop-health analytics.
 - Alerts users when disease-report thresholds are reached in their district.
@@ -23,7 +23,7 @@ It also provides secure user accounts, prediction history, dashboard analytics, 
 | Machine learning | TensorFlow, Keras, MobileNetV2 |
 | Image processing | Pillow, OpenCV, NumPy |
 | Data and authentication | Supabase PostgreSQL and Supabase Auth |
-| AI reports | Groq |
+| AI reports | Gemini API |
 | Visualizations | Plotly |
 
 ## Project structure
@@ -43,7 +43,7 @@ It also provides secure user accounts, prediction history, dashboard analytics, 
 
 - Python 3.11
 - A Supabase project
-- A Groq API key if you want AI-generated reports
+- A Gemini API key if you want AI-generated reports
 - Node.js and npm only if you want to apply Supabase migrations with the CLI
 
 ## Installation
@@ -82,10 +82,7 @@ SUPABASE_URL=https://YOUR_PROJECT_REF.supabase.co
 SUPABASE_KEY=YOUR_SUPABASE_ANON_KEY
 
 # Required only for AI-generated reports
-GROQ_API_KEY=YOUR_GROQ_API_KEY
-
-# Optional
-GROQ_MODEL=llama-3.1-8b-instant
+GEMINI_API_KEY=YOUR_GEMINI_API_KEY
 ```
 
 Find the Supabase URL and anon key in your Supabase project's **Connect** or **API** settings. Use the anon/public key, not a service-role key.
@@ -95,8 +92,7 @@ For a Streamlit deployment, configure the same values in `.streamlit/secrets.tom
 ```toml
 SUPABASE_URL = "https://YOUR_PROJECT_REF.supabase.co"
 SUPABASE_KEY = "YOUR_SUPABASE_ANON_KEY"
-GROQ_API_KEY = "YOUR_GROQ_API_KEY"
-GROQ_MODEL = "llama-3.1-8b-instant"
+GEMINI_API_KEY = "YOUR_GEMINI_API_KEY"
 ```
 
 ## Supabase setup
@@ -132,7 +128,7 @@ Apply all SQL files in `supabase/migrations/`, in filename order, then retry the
 
 ### AI reports are unavailable
 
-Set `GROQ_API_KEY` in `.env` or Streamlit secrets. Leaf detection and disease classification work without it; only report generation is disabled.
+Set `GEMINI_API_KEY` in `.env`. Leaf detection and disease classification work without it; only report generation is disabled.
 
 ## License
 
