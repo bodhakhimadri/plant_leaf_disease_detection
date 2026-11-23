@@ -98,11 +98,19 @@ def show_detection_page():
         st.header("Disease Information")
         st.write(disease_info.get("description", "Information unavailable."))
         with st.expander("Symptoms"):
-            for symptom in disease_info.get("symptoms", []):
-                st.write(f"• {symptom}")
+            symptoms = disease_info.get("symptoms", [])
+            if symptoms:
+                for symptom in symptoms:
+                    st.write(f"• {symptom}")
+            else:
+                st.info("Curated symptoms are not available for this diagnosis yet.")
         with st.expander("Organic Treatment Recommendations"):
-            for treatment in disease_info.get("organic_treatment", []):
-                st.write(f"• {treatment}")
+            treatments = disease_info.get("organic_treatment", [])
+            if treatments:
+                for treatment in treatments:
+                    st.write(f"• {treatment}")
+            else:
+                st.info("Curated treatment guidance is not available for this diagnosis yet.")
     except Exception as error:
         st.warning(f"Disease information unavailable: {error}")
 
@@ -114,10 +122,10 @@ def show_detection_page():
     if st.button("Generate AI Report", use_container_width=True):
         with st.spinner("Generating AI report..."):
             try:
-                report = generate_report(disease_name, confidence)
-                st.markdown(report)
+                report_result = generate_report(disease_name, confidence)
+                st.markdown(report_result["text"])
                 try:
-                    save_report(disease_name, confidence, report)
+                    save_report(disease_name, confidence, report_result["text"])
                     st.success("Report saved successfully.")
                 except Exception as save_error:
                     st.warning(f"The report was generated but could not be saved: {save_error}")
